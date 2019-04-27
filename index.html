@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>News Feed</title>
+</head>
+<body>
+    <div id="news-feed">
+        <div id="article">
+            <img id="article-image" src="">
+            <div id="content">
+                <h3 id="title"></h3>
+                <p id="description"></p>
+            </div>
+            <div id="info">
+                <p id="author"></p>
+                <p id="source"></p>
+                <p id="date"></p>
+            </div>
+        </div>
+    </div>    
+    <script>
+
+    var url = 'https://newsapi.org/v2/top-headlines?' +
+            'country=us&' +
+            'apiKey=c951460373084c91bdf4fa34f4b4c44c';
+
+    fetch(new Request(url))
+        .then(function(response) {
+            response.json().then(function(data) {
+                document.getElementById('article-image').src = data.articles[0].urlToImage;
+                document.getElementById('title').innerHTML = data.articles[0].title;
+                document.getElementById('description').innerText = data.articles[0].description;
+                document.getElementById('author').innerText = data.articles[0].author;
+                document.getElementById('source').innerText = data.articles[0].source.name;
+                document.getElementById('date').innerText = data.articles[0].publishedAt;
+            });
+        })
+
+    </script>
+</body>
+</html>
