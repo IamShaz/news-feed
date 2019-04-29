@@ -1,4 +1,14 @@
 
+/* Controllers */
+#controller {
+    float: right;
+}
+#left, #right {
+    font-size: 40px;
+    cursor: pointer;
+    margin-top: 1em;
+}
+
 #tv {
     height: 70vh;
     width: 80%;
