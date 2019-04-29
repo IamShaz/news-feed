@@ -4,14 +4,27 @@ var url = 'https://newsapi.org/v2/top-headlines?' +
 
 fetch(new Request(url))
 .then(function(response) {
-response.json().then(function(data) {
+    response.json().then(function(data) {
 
-    document.getElementById('article-image').src = data.articles[1].urlToImage;
-    document.getElementById('title').innerHTML = data.articles[1].title;
-    document.getElementById('description').innerText = data.articles[1].description;
-    document.getElementById('author').innerText = data.articles[1].author;
-    document.getElementById('source').innerText = data.articles[1].source.name;
-    document.getElementById('date').innerText = new Date(Date.parse(data.articles[1].publishedAt)).toDateString();
+        document.getElementById('article-image').src = data.articles[1].urlToImage;
+        document.getElementById('title').innerHTML = data.articles[1].title;
+        document.getElementById('description').innerText = data.articles[1].description;
+        document.getElementById('author').innerText = data.articles[1].author;
+        document.getElementById('source').innerText = data.articles[1].source.name;
+        document.getElementById('date').innerText = new Date(Date.parse(data.articles[1].publishedAt)).toDateString();
+
+    });
+
+    // Typing Text Title
+    var titleCount = 0;
+    var title = 'The Latest Headlines';
+
+    (typingTitle = () => {
+        if(titleCount < title.length) {
+            document.getElementsByTagName('h1')[0].innerHTML += title.charAt(titleCount);
+            titleCount++;
+            setTimeout(typingTitle, 200);
+        }
+    })();
 
 });
-})
