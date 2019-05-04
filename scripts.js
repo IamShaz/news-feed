@@ -1,72 +1,166 @@
-(function(){
+// Search Filters
+let country = document.getElementById('country-filters');
+let category = document.getElementById('category-filters');
+let countryArr = [
+    { 'countryName': 'Argentina', 'code': 'ar' },
+    { 'countryName': 'Australia', 'code': 'au' },
+    { 'countryName': 'Austria', 'code': 'at' },
+    { 'countryName': 'Belgium', 'code': 'be' },
+    { 'countryName': 'Brazil', 'code': 'br' },
+    { 'countryName': 'Bulgaria', 'code': 'bg' },
+    { 'countryName': 'Canada', 'code': 'ca' },
+    { 'countryName': 'China', 'code': 'cn' },
+    { 'countryName': 'Colombia', 'code': 'co' },
+    { 'countryName': 'Cuba', 'code': 'cu' },
+    { 'countryName': 'Czech Republic', 'code': 'cz' },
+    { 'countryName': 'Egypt', 'code': 'eg' },
+    { 'countryName': 'France', 'code': 'fr' },
+    { 'countryName': 'Germany', 'code': 'de' },
+    { 'countryName': 'Hong Kong', 'code': 'hk' },
+    { 'countryName': 'Hungary', 'code': 'hu' },
+    { 'countryName': 'India', 'code': 'in' },
+    { 'countryName': 'Indonesia', 'code': 'id' },
+    { 'countryName': 'Ireland', 'code': 'ie' },
+    { 'countryName': 'Israel', 'code': 'il' },
+    { 'countryName': 'Italy', 'code': 'it' },
+    { 'countryName': 'Japan', 'code': 'jp' },
+    { 'countryName': 'Korea, Republic of', 'code': 'kr' },
+    { 'countryName': 'Lithuania', 'code': 'lt' },
+    { 'countryName': 'Latvia', 'code': 'lv' },
+    { 'countryName': 'Malaysia', 'code': 'my' }, 
+    { 'countryName': 'Mexico', 'code': 'mx' },
+    { 'countryName': 'Morocco', 'code': 'ma' },
+    { 'countryName': 'Netherlands', 'code': 'nl' },
+    { 'countryName': 'Nigeria', 'code': 'ng' },
+    { 'countryName': 'New Zealand', 'code': 'nz' },
+    { 'countryName': 'Norway', 'code': 'no' },
+    { 'countryName': 'Philippines', 'code': 'ph' },
+    { 'countryName': 'Poland', 'code': 'pl' },
+    { 'countryName': 'Portugal', 'code': 'pt' },
+    { 'countryName': 'Romania', 'code': 'ro' },
+    { 'countryName': 'Russian Federation', 'code': 'ru' },
+    { 'countryName': 'Saudi Arabia', 'code': 'sa' },
+    { 'countryName': 'Serbia', 'code': 'rs' },
+    { 'countryName': 'Singapore', 'code': 'sg' },
+    { 'countryName': 'Slovakia', 'code': 'sk' },
+    { 'countryName': 'South Africa', 'code': 'za' },
+    { 'countryName': 'Sweden', 'code': 'se' },
+    { 'countryName': 'Switzerland', 'code': 'ch' },
+    { 'countryName': 'Taiwan, Province of China', 'code': 'tw' },
+    { 'countryName': 'Thailand', 'code': 'th' },
+    { 'countryName': 'Turkey', 'code': 'tr' },
+    { 'countryName': 'Ukraine', 'code': 'ua' },    
+    { 'countryName': 'United Arab Emirates', 'code': 'ae' }, 
+    { 'countryName': 'United Kingdom', 'code': 'gb' },                           
+    { 'countryName': 'US', 'code': 'us' },
+    { 'countryName': 'Venezuela', 'code': 've' }
+];
+let categoryArr = ['Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'];
 
-    // Controller Navigation
-    var left = document.getElementById('left');
-    var right = document.getElementById('right');
-    var navCount = 0;    
+// Creates filter dropdown menus
+countryArr.map(countryItem => {
+    var countOpt = document.createElement('option');
+    countOpt.innerHTML = countryItem.countryName;
+    countOpt.value = countryItem.code;
+    country.appendChild(countOpt);
+});
+categoryArr.map(categoryItem => {
+    var catOpt = document.createElement('option');
+    catOpt.innerHTML = categoryItem;
+    catOpt.value = categoryItem;
+    category.appendChild(catOpt);
+});
 
-    (fetchNewsData = () => {
+let navCount = 0;    
 
-        var url = 'https://newsapi.org/v2/top-headlines?' +
-        'country=us&' +
-        'apiKey=c951460373084c91bdf4fa34f4b4c44c';
+controllerFunc = (dataArticles) => {
+    controlStyling = (dir,trans) => {
+        dir.style.opacity = trans;
+    }
 
-        fetch(new Request(url))
-            .then(function(response) {
-            response.json().then(function(data) {
-                createArticles(data);
-            });
+    if(navCount <= 0) {
+        controlStyling(left, 0.5);
+        navCount = 0;
+    } else {
+        controlStyling(left, 1);
+    }
+    if(navCount >= dataArticles.length - 1) {
+        controlStyling(right, 0.5);
+        navCount = dataArticles.length - 1;
+    } else {
+        controlStyling(right, 1);
+    }    
+}
+
+createArticles = (dataArticles) => {
+    controllerFunc(dataArticles);
+    document.getElementById('article-image').src = dataArticles[navCount].urlToImage;
+    document.getElementById('title').innerHTML = dataArticles[navCount].title;
+    document.getElementById('description').innerText = dataArticles[navCount].description;
+    document.getElementById('author').innerText = dataArticles[navCount].author;
+    document.getElementById('source').innerText = dataArticles[navCount].source.name;
+    document.getElementById('date').innerText = new Date(Date.parse(dataArticles[navCount].publishedAt)).toDateString();
+}
+
+fetchNewsData = (countVal, catVal) => {
+    let url = 'https://newsapi.org/v2/top-headlines?' +
+    'country=' + countVal + '&' +
+    'category=' + catVal + '&' +
+    'apiKey=c951460373084c91bdf4fa34f4b4c44c';
+
+    fetch(new Request(url))
+        .then(function(response) {
+        response.json().then(function(data) {
+            let dataArticles = data.articles;
+            createArticles(dataArticles);
         });
-    })();
+    });
+};
 
-    createArticles = (data) => {
-
-        controlStyling = (dir,trans) => {
-            dir.style.opacity = trans;
-        }
-
-        if(navCount <= 0) {
-            controlStyling(left, 0.5);
-            navCount = 0;
-        } else {
-            controlStyling(left, 1);
-        }
-        if(navCount >= data.articles.length - 1) {
-            controlStyling(right, 0.5);
-            navCount = data.articles.length - 1;
-        } else {
-            controlStyling(right, 1);
-        }
-
-        document.getElementById('article-image').src = data.articles[navCount].urlToImage;
-        document.getElementById('title').innerHTML = data.articles[navCount].title;
-        document.getElementById('description').innerText = data.articles[navCount].description;
-        document.getElementById('author').innerText = data.articles[navCount].author;
-        document.getElementById('source').innerText = data.articles[navCount].source.name;
-        document.getElementById('date').innerText = new Date(Date.parse(data.articles[navCount].publishedAt)).toDateString();        
-
+// Typing text header
+let titleCount = 0;
+let title = 'The Latest Headlines';
+typingTitle = () => {
+    if(titleCount < title.length) {
+        document.getElementsByTagName('h1')[0].innerHTML += title.charAt(titleCount);
+        titleCount++;
+        setTimeout(typingTitle, 200);
     }
+};  
 
-    left.onclick = () => {
-        navCount--;
-        fetchNewsData();
-    }
-    right.onclick = () => {
-        navCount++;
-        fetchNewsData();
-    }
+// Gets Filtered data and runs api
+getData = () => {
+    let countVal = country.value;
+    let catVal = category.value;
+    fetchNewsData(countVal, catVal);
+}
 
+let btn = document.getElementById('search-filters').querySelector('button');
+let newsFeed = document.getElementById('news-feed');
+btn.addEventListener('click', function() {
+    newsFeed.style.display = 'block';
+    getData();
+    typingTitle();
+});
 
-    // Typing Text Title
-    var titleCount = 0;
-    var title = 'The Latest Headlines';
+// Controller Navigation
+var controller = document.getElementById('controller');
 
-    (typingTitle = () => {
-        if(titleCount < title.length) {
-            document.getElementsByTagName('h1')[0].innerHTML += title.charAt(titleCount);
-            titleCount++;
-            setTimeout(typingTitle, 200);
-        }
-    })();    
-    
-})();
+var left = document.createElement('div');
+left.id = "left"
+left.innerHTML = '&lBarr;';
+controller.appendChild(left);
+
+var right = document.createElement('div');
+right.id = "right"
+right.innerHTML = '&rBarr;';
+controller.appendChild(right);   
+
+left.onclick = () => {
+    navCount--;
+    getData();
+}
+right.onclick = () => {
+    navCount++;
+    getData();
+}
