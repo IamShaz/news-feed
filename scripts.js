@@ -100,6 +100,7 @@ createArticles = (dataArticles) => {
     document.getElementById('author').innerText = dataArticles[navCount].author;
     document.getElementById('source').innerText = dataArticles[navCount].source.name;
     document.getElementById('date').innerText = new Date(Date.parse(dataArticles[navCount].publishedAt)).toDateString();
+    document.getElementById('link').href = dataArticles[navCount].url;    
 }
 
 fetchNewsData = (countVal, catVal) => {

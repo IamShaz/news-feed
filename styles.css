@@ -32,6 +32,13 @@
     justify-content: space-between;
     margin: auto;
 }
+#link {
+    text-decoration: none;
+    color: #000;
+}
+#link:hover {
+    text-decoration: underline;
+}
 #media {
     display: flex;
     flex-basis: 50em;
