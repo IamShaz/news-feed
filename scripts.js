@@ -1,26 +1,16 @@
 (function(){
-
-    function createID(name) {
-        return document.getElementById(name);
-    }
-
-    var remoteScreen = document.getElementById('remote-screen');
-    var article = createID('article');
-    var author = createID('author');
-    var playNewsFeed = createID('play-newsfeed');
-
-    var power = createID('power');
-    var powerBtn = power.querySelector('img');
+    var powerBtn = document.getElementById('power').querySelector('img');
+    var power = document.getElementById('power');
     powerBtn.addEventListener('click', function() {
         power.classList.add('hidden');
-        remoteScreen.className = 'show';  
-        createID('tv-remote').classList.add('slide-up');
+        document.getElementById('remote-screen').style.display = 'block';  
+        document.getElementById('tv-remote').classList.add('slide-up');
         typingTitle(showRemoteTitle);
     })
 
     // Search Filters
-    let country = createID('country-filters');
-    let category = createID('category-filters');
+    let country = document.getElementById('country-filters');
+    let category = document.getElementById('category-filters');
     let countryArr = [
         { 'countryName': 'Argentina', 'code': 'ar' },
         { 'countryName': 'Australia', 'code': 'au' },
@@ -77,26 +67,27 @@
     ];
     let categoryArr = ['Business', 'Entertainment', 'General', 'Health', 'Science', 'Sports', 'Technology'];
 
-    countryArr = countryArr.map(function(countryItem) {
+    // Creates filter dropdown menus
+    countryArr.map(countryItem => {
         var countOpt = document.createElement('option');
         countOpt.innerHTML = countryItem.countryName;
         countOpt.value = countryItem.code;
         country.appendChild(countOpt);
     });
-
-    categoryArr = categoryArr.map(function(categoryItem) {
+    categoryArr.map(categoryItem => {
         var catOpt = document.createElement('option');
         catOpt.innerHTML = categoryItem;
         catOpt.value = categoryItem;
         category.appendChild(catOpt);
-    });    
+    });
 
-    let navCount = 0;
+    let navCount = 0;    
 
-    controllerFunc = function(dataArticles) {
-        controlStyling = function(dir,trans) {
+    controllerFunc = (dataArticles) => {
+        controlStyling = (dir,trans) => {
             dir.style.opacity = trans;
         }
+
         if(navCount <= 0) {
             controlStyling(left, 0.5);
             navCount = 0;
@@ -109,31 +100,31 @@
         } else {
             controlStyling(right, 1);
         }    
-    }    
+    }
 
-    createArticles = function(dataArticles) {
+    createArticles = (dataArticles) => {
         controllerFunc(dataArticles);
-        article.querySelector('img').src = dataArticles[navCount].urlToImage;
+        document.getElementById('article').querySelector('img').src = dataArticles[navCount].urlToImage;
         var titlStr = dataArticles[navCount].title.substring(0, 50);
-        createID('title').innerHTML = titlStr.substring(0, Math.min(titlStr.length, titlStr.lastIndexOf(" "))) + ' ...';
+        document.getElementById('title').innerHTML = titlStr.substring(0, Math.min(titlStr.length, titlStr.lastIndexOf(" "))) + ' ...';
         var descStr = dataArticles[navCount].description.substring(0, 80);
-        createID('description').innerText = descStr.substring(0, Math.min(descStr.length, descStr.lastIndexOf(" "))) + ' ...';
-        author.innerText = dataArticles[navCount].author;
-        if(author.innerText == '') {
-            document.querySelector('.dash').className = 'hidden';
+        document.getElementById('description').innerText = descStr.substring(0, Math.min(descStr.length, descStr.lastIndexOf(" "))) + ' ...';
+        document.getElementById('author').innerText = dataArticles[navCount].author;
+        if(document.getElementById('author').innerText == '') {
+            document.querySelector('.dash').style.display = 'none';
         } else {
             document.querySelector('.dash').style.display = 'inline-block';
         }
         
-        createID('source').innerText = dataArticles[navCount].source.name;
-        createID('date').innerText = new Date(Date.parse(dataArticles[navCount].publishedAt)).toDateString();
-        article.querySelector('.link').href = dataArticles[navCount].url;
-        playNewsFeed.querySelector('.link').href = dataArticles[navCount].url;
-        createID('center-content').querySelector('.link').href = dataArticles[navCount].url;        
-        createID('bottom-content').querySelector('.link').href = dataArticles[navCount].url;
+        document.getElementById('source').innerText = dataArticles[navCount].source.name;
+        document.getElementById('date').innerText = new Date(Date.parse(dataArticles[navCount].publishedAt)).toDateString();
+        document.getElementById('article').querySelector('.link').href = dataArticles[navCount].url;
+        document.getElementById('play-newsfeed').querySelector('.link').href = dataArticles[navCount].url;
+        document.getElementById('center-content').querySelector('.link').href = dataArticles[navCount].url;        
+        document.getElementById('bottom-content').querySelector('.link').href = dataArticles[navCount].url;
     }
 
-    fetchNewsData = function(countVal, catVal) {
+    fetchNewsData = (countVal, catVal) => {
         let url = 'https://newsapi.org/v2/top-headlines?' +
         'country=' + countVal + '&' +
         'category=' + catVal + '&' +
@@ -148,16 +139,17 @@
         });
     };
 
+
     showRemoteTitle = function() {
-        remoteScreen.querySelector('p').style.opacity = 1;
+        document.getElementById('remote-screen').querySelector('p').style.opacity = 1;
     }     
 
     // Typing text header
     let titleCount = 0;
     let title = 'Read the Latest Headlines';
-    typingTitle = function(showRemoteTitle) {
+    typingTitle = (showRemoteTitle) => {
         if(titleCount < title.length) {                        
-            remoteScreen.querySelector('h2').innerHTML += title.charAt(titleCount);
+            document.getElementById('remote-screen').querySelector('h2').innerHTML += title.charAt(titleCount);
             titleCount++;
             setTimeout(typingTitle, 70);
         }
@@ -165,7 +157,7 @@
     };
 
     // Gets Filtered data and runs api
-    getData = function() {
+    getData = () => {
         let countVal = country.value;
         let catVal = category.value;    
 
@@ -177,12 +169,12 @@
         fetchNewsData(countVal, catVal);
     }
 
-    var controller = createID('controller');
-    let btn = createID('search-filters').querySelector('button');
+    var controller = document.getElementById('controller');
+    let btn = document.getElementById('search-filters').querySelector('button');
     btn.addEventListener('click', function() {    
-        playNewsFeed.className = 'show';
+        document.getElementById('play-newsfeed').style.display = 'block';
         controller.style.display = 'flex';
-        remoteScreen.className = 'hidden';
+        document.getElementById('remote-screen').style.display = 'none';
         getData();        
     });
     btn.onmousedown = function() {
@@ -192,22 +184,24 @@
         btn.classList.remove('inset-shadow');
     }  
 
+
     // Controller Navigation
+
     var left = document.createElement('div');
     left.id = "left"
-    left.innerHTML = '&larr;';
+    left.innerHTML = '<';
     controller.appendChild(left);
 
     var right = document.createElement('div');
     right.id = "right"
-    right.innerHTML = '	&rarr;';
+    right.innerHTML = '>';
     controller.appendChild(right);   
 
-    left.onclick = function() {        
+    left.onclick = () => {        
         navCount--;
         getData();
     }
-    right.onclick = function() {
+    right.onclick = () => {
         navCount++;
         getData();
     }
@@ -222,6 +216,7 @@
     }
     right.onmouseup = function() {
         right.classList.remove('inset-shadow');
-    }
-    
+    }        
+
+
 }());
